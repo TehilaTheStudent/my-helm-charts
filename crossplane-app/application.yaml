@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane-app
+  namespace: argocd # the namespace where your ArgoCD is installed
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/TehilaTheStudent/my-helm-charts.git
+    path: crossplane-app
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: crossplane-app
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true
