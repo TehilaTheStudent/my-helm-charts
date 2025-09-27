@@ -1,0 +1,156 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.19.0
+  name: crdsconfigs.crds.crds.installer.io
+spec:
+  group: crds.crds.installer.io
+  names:
+    kind: CrdsConfig
+    listKind: CrdsConfigList
+    plural: crdsconfigs
+    singular: crdsconfig
+  scope: Cluster
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              providerTemplate:
+                properties:
+                  metadata:
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                    type: object
+                  spec:
+                    properties:
+                      commonLabels:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      controllerConfigRef:
+                        properties:
+                          name:
+                            type: string
+                        required:
+                        - name
+                        type: object
+                      ignoreCrossplaneConstraints:
+                        default: false
+                        type: boolean
+                      package:
+                        type: string
+                      packagePullPolicy:
+                        default: IfNotPresent
+                        type: string
+                      packagePullSecrets:
+                        items:
+                          properties:
+                            name:
+                              default: ""
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        type: array
+                      revisionActivationPolicy:
+                        default: Automatic
+                        type: string
+                      revisionHistoryLimit:
+                        default: 1
+                        format: int64
+                        type: integer
+                      runtimeConfigRef:
+                        default:
+                          name: default
+                        properties:
+                          apiVersion:
+                            default: pkg.crossplane.io/v1beta1
+                            type: string
+                          kind:
+                            default: DeploymentRuntimeConfig
+                            type: string
+                          name:
+                            type: string
+                        required:
+                        - name
+                        type: object
+                      skipDependencyResolution:
+                        default: false
+                        type: boolean
+                    required:
+                    - package
+                    type: object
+                required:
+                - spec
+                type: object
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

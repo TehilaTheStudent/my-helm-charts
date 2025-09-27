@@ -1,0 +1,10 @@
+apiVersion: crds.crds.installer.io/v1
+kind: CrdsConfig
+metadata:
+  name: crdsconfig-sample
+spec:
+  providerTemplate:
+    metadata:
+      name: provider-gitlab
+    spec:
+      package: xpkg.upbound.io/crossplane-contrib/provider-gitlab:v0.13.0
