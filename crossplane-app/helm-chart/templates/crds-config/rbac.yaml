@@ -1,0 +1,219 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: crossplane-crds
+  name: crossplane-crds-leader-election-role
+  namespace: crossplane-crds-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: crossplane-crds
+  name: crossplane-crds-crdsconfig-admin-role
+rules:
+- apiGroups:
+  - crds.crds.installer.io
+  resources:
+  - crdsconfigs
+  verbs:
+  - '*'
+- apiGroups:
+  - crds.crds.installer.io
+  resources:
+  - crdsconfigs/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: crossplane-crds
+  name: crossplane-crds-crdsconfig-editor-role
+rules:
+- apiGroups:
+  - crds.crds.installer.io
+  resources:
+  - crdsconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - crds.crds.installer.io
+  resources:
+  - crdsconfigs/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: crossplane-crds
+  name: crossplane-crds-crdsconfig-viewer-role
+rules:
+- apiGroups:
+  - crds.crds.installer.io
+  resources:
+  - crdsconfigs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - crds.crds.installer.io
+  resources:
+  - crdsconfigs/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crossplane-crds-manager-role
+rules:
+- apiGroups:
+  - crds.crds.installer.io
+  resources:
+  - crdsconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - crds.crds.installer.io
+  resources:
+  - crdsconfigs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - crds.crds.installer.io
+  resources:
+  - crdsconfigs/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crossplane-crds-metrics-auth-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crossplane-crds-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: crossplane-crds
+  name: crossplane-crds-leader-election-rolebinding
+  namespace: crossplane-crds-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: crossplane-crds-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: crossplane-crds-controller-manager
+  namespace: crossplane-crds-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: crossplane-crds
+  name: crossplane-crds-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crossplane-crds-manager-role
+subjects:
+- kind: ServiceAccount
+  name: crossplane-crds-controller-manager
+  namespace: crossplane-crds-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: crossplane-crds-metrics-auth-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crossplane-crds-metrics-auth-role
+subjects:
+- kind: ServiceAccount
+  name: crossplane-crds-controller-manager
+  namespace: crossplane-crds-system
+---

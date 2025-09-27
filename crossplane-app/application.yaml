@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/TehilaTheStudent/my-helm-charts.git
-    path: crossplane-app
+    path: crossplane-app/helm-chart
 
   destination:
     server: https://kubernetes.default.svc
