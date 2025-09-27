@@ -28,7 +28,7 @@ spec:
         - --health-probe-bind-address=:8081
         command:
         - /manager
-        image: controller:latest
+        image: tehilathestudent/crossplane-crds:v1
         livenessProbe:
           httpGet:
             path: /healthz
