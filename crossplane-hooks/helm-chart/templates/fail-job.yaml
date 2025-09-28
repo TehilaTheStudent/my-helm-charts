@@ -1,0 +1,23 @@
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: fail-job
+#   annotations:
+#     # "helm.sh/hook": post-install,post-upgrade
+#     # "helm.sh/hook-weight": "1"
+#     # "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+# spec:
+#   template:
+#     spec:
+#       serviceAccountName: crossplane-hooks-sa
+#       containers:
+#         - name: fail-job
+#           image: bitnami/kubectl:latest
+#           command: ["/bin/sh"]
+#           args:
+#             - -c
+#             - |
+#               echo "Failing job"
+#               exit 1
+#       restartPolicy: Never
+#   backoffLimit: 3

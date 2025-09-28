@@ -5,7 +5,7 @@ metadata:
   annotations:
     "helm.sh/hook": pre-delete
     # "helm.sh/hook-weight": "1"
-    # "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   template:
     spec:
@@ -17,7 +17,21 @@ spec:
           args:
             - -c
             - |
-              echo "Checking if provider exists..."
+              echo "Checking for GitLab projects..."
+              
+              # Check if there are any GitLab projects in the cluster
+              GITLAB_RESOURCES=$(kubectl get projects.projects.gitlab.crossplane.io 2>/dev/null || true)
+              
+              if [ -n "$GITLAB_RESOURCES" ]; then
+                echo "Error: GitLab projects found in cluster:"
+                echo "$GITLAB_RESOURCES"
+                echo "Cannot proceed with deletion while GitLab projects exist."
+                echo "Please delete all GitLab projects first."
+                exit 1
+              fi
+              
+              echo "No GitLab projects found, proceeding with provider deletion..."
+              
               if kubectl get providers provider-gitlab >/dev/null 2>&1; then
                 echo "Deleting provider provider-gitlab..."
                 kubectl delete providers provider-gitlab --cascade=foreground
@@ -26,4 +40,4 @@ spec:
                 echo "Provider provider-gitlab not found, nothing to delete"
               fi
       restartPolicy: Never
-  backoffLimit: 3
+  backoffLimit: 1

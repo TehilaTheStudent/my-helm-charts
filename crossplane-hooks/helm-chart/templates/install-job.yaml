@@ -5,7 +5,7 @@ metadata:
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     # "helm.sh/hook-weight": "1"
-    # "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   template:
     spec:
@@ -17,6 +17,16 @@ spec:
           args:
             - -c
             - |
+              echo "Waiting for Provider CRD to be available..."
+              
+              # Wait for the Provider CRD to exist in the cluster
+              while ! kubectl get crd providers.pkg.crossplane.io >/dev/null 2>&1; do
+                echo "Provider CRD not found, waiting 5 seconds..."
+                sleep 5
+              done
+              
+              echo "Provider CRD found, proceeding with provider installation..."
+              
               cat <<EOF | kubectl apply -f -
               apiVersion: pkg.crossplane.io/v1
               kind: Provider
