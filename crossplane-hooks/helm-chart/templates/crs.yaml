@@ -1,0 +1,24 @@
+apiVersion: projects.gitlab.crossplane.io/v1alpha1
+kind: Project
+metadata:
+  name: example-project
+spec:
+  forProvider:
+    description: example project description
+    name: Example Project 28_9
+  providerConfigRef:
+    name: gitlab
+---    
+apiVersion: gitlab.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: gitlab
+spec:
+  baseURL: https://gitlab.com/
+  credentials:
+    source: Secret
+    method: PersonalAccessToken
+    secretRef:
+      namespace: crossplane-system
+      name: gitlab
+      key: token
