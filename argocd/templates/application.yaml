@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd # Argo CD's control namespace
+  # annotations:
+  #   "helm.sh/hook": post-install,post-upgrade
+spec:
+  project: default # Argo CD project (default unless you created others)
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    targetRevision: HEAD
+    path: guestbook # folder inside the repo with manifests or Helm chart
+  destination:
+    server: https://kubernetes.default.svc # in-cluster cluster
+    namespace: guestbook
+  syncPolicy:
+    automated: {} # (optional) enables auto-sync

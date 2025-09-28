@@ -1,4 +1,6 @@
-crossplane:
-  provider:
-    packages:
-      - xpkg.upbound.io/crossplane-contrib/provider-gitlab:v0.13.0
+# crossplane:
+#   provider:
+#     packages:
+#       - xpkg.upbound.io/crossplane-contrib/provider-gitlab:v0.13.0
+crdsconfig:
+  create: true

@@ -1,3 +1,4 @@
+{{- if .Values.crdsconfig.create }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,7 +29,7 @@ spec:
         - --health-probe-bind-address=:8081
         command:
         - /manager
-        image: tehilathestudent/crossplane-crds:v1
+        image: tehilathestudent/crossplane-crds:v3
         livenessProbe:
           httpGet:
             path: /healthz
@@ -64,3 +65,4 @@ spec:
       serviceAccountName: crossplane-crds-controller-manager
       terminationGracePeriodSeconds: 10
       volumes: []
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if .Values.crdsconfig.create }}
 apiVersion: crds.crds.installer.io/v1
 kind: CrdsConfig
 metadata:
@@ -8,3 +9,4 @@ spec:
       name: provider-gitlab
     spec:
       package: xpkg.upbound.io/crossplane-contrib/provider-gitlab:v0.13.0
+{{- end }}
