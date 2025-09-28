@@ -17,21 +17,34 @@ spec:
           args:
             - -c
             - |
-              echo "Checking for GitLab projects..."
+              echo "Deleting GitLab CRD resources..."
               
-              # Check if there are any GitLab projects in the cluster
-              GITLAB_RESOURCES=$(kubectl get projects.projects.gitlab.crossplane.io 2>/dev/null || true)
+              # Delete all instances of each GitLab CRD (excluding providerconfig and providerconfigusage)
+              kubectl delete accesstokens.groups.gitlab.crossplane.io --all --wait=true || echo "No accesstokens.groups found"
+              kubectl delete accesstokens.projects.gitlab.crossplane.io --all --wait=true || echo "No accesstokens.projects found"
+              kubectl delete approvalrules.projects.gitlab.crossplane.io --all --wait=true || echo "No approvalrules.projects found"
+              kubectl delete deploykeys.projects.gitlab.crossplane.io --all --wait=true || echo "No deploykeys.projects found"
+              kubectl delete deploytokens.groups.gitlab.crossplane.io --all --wait=true || echo "No deploytokens.groups found"
+              kubectl delete deploytokens.projects.gitlab.crossplane.io --all --wait=true || echo "No deploytokens.projects found"
+              kubectl delete groups.groups.gitlab.crossplane.io --all --wait=true || echo "No groups.groups found"
+              kubectl delete hooks.projects.gitlab.crossplane.io --all --wait=true || echo "No hooks.projects found"
+              kubectl delete members.groups.gitlab.crossplane.io --all --wait=true || echo "No members.groups found"
+              kubectl delete members.projects.gitlab.crossplane.io --all --wait=true || echo "No members.projects found"
+              kubectl delete pipelineschedules.projects.gitlab.crossplane.io --all --wait=true || echo "No pipelineschedules.projects found"
+              kubectl delete projects.projects.gitlab.crossplane.io --all --wait=true || echo "No projects.projects found"
+              kubectl delete runners.groups.gitlab.crossplane.io --all --wait=true || echo "No runners.groups found"
+              kubectl delete runners.projects.gitlab.crossplane.io --all --wait=true || echo "No runners.projects found"
+              kubectl delete samlgrouplinks.groups.gitlab.crossplane.io --all --wait=true || echo "No samlgrouplinks.groups found"
+              kubectl delete storeconfigs.gitlab.crossplane.io --all --wait=true || echo "No storeconfigs found"
+              kubectl delete variables.groups.gitlab.crossplane.io --all --wait=true || echo "No variables.groups found"
+              kubectl delete variables.projects.gitlab.crossplane.io --all --wait=true || echo "No variables.projects found"
               
-              if [ -n "$GITLAB_RESOURCES" ]; then
-                echo "Error: GitLab projects found in cluster:"
-                echo "$GITLAB_RESOURCES"
-                echo "Cannot proceed with deletion while GitLab projects exist."
-                echo "Please delete all GitLab projects first."
-                exit 1
-              fi
+              echo "Waiting for all resources to be deleted..."
+              sleep 10
               
-              echo "No GitLab projects found, proceeding with provider deletion..."
+              echo "Deleting provider..."
               
+              # Delete the provider
               if kubectl get providers provider-gitlab >/dev/null 2>&1; then
                 echo "Deleting provider provider-gitlab..."
                 kubectl delete providers provider-gitlab --cascade=foreground

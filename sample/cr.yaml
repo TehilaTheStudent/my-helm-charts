@@ -1,0 +1,6 @@
+apiVersion: example.com/v1alpha1
+kind: Widget
+metadata:
+  name: my-widget
+spec:
+  size: small
