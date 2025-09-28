@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: delete-job
+  annotations:
+    "helm.sh/hook": pre-delete
+    # "helm.sh/hook-weight": "1"
+    # "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: crossplane-hooks-sa
+      containers:
+        - name: delete-job
+          image: bitnami/kubectl:latest
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              echo "Checking if provider exists..."
+              if kubectl get providers provider-gitlab >/dev/null 2>&1; then
+                echo "Deleting provider provider-gitlab..."
+                kubectl delete providers provider-gitlab --cascade=foreground
+                echo "Provider deleted successfully"
+              else
+                echo "Provider provider-gitlab not found, nothing to delete"
+              fi
+      restartPolicy: Never
+  backoffLimit: 3

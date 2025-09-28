@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: install-job
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    # "helm.sh/hook-weight": "1"
+    # "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: crossplane-hooks-sa
+      containers:
+        - name: install-job
+          image: bitnami/kubectl:latest
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              cat <<EOF | kubectl apply -f -
+              apiVersion: pkg.crossplane.io/v1
+              kind: Provider
+              metadata:
+                name: provider-gitlab
+              spec:
+                package: xpkg.upbound.io/crossplane-contrib/provider-gitlab:v0.13.0
+              EOF
+              echo "Provider applied successfully"
+      restartPolicy: Never
+  backoffLimit: 3

@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crossplane-hooks-role
+  labels:
+    app.kubernetes.io/name: crossplane-hooks
+    app.kubernetes.io/instance: {{ .Release.Name }}
+rules:
+- apiGroups: ["pkg.crossplane.io"]
+  resources: ["providers"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["pkg.crossplane.io"]
+  resources: ["configurations"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create", "patch"]
