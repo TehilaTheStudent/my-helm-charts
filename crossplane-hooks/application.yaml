@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane-hooks
+  namespace: argocd            # change if your ArgoCD lives in a different namespace
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/TehilaTheStudent/my-helm-charts.git
+    path: crossplane-hooks/helm-chart
+    targetRevision: HEAD
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: crossplane-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
