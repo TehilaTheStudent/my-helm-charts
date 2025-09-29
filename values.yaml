@@ -1,0 +1,8 @@
+extraVolumeMountsCrossplane:
+  - name: custom-certs
+    mountPath: /etc/ssl/certs/cert.pem
+    subPath: cert.pem
+extraVolumesCrossplane:
+  - name: custom-certs
+    configMap:
+      name: custom-certs-cm
