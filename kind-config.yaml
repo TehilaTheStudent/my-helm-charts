@@ -1,0 +1,13 @@
+# kind-registry.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+# containerdConfigPatches:
+# - |-
+#   [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:5000"]
+#     endpoint = ["http://localhost:5000"]
+containerdConfigPatches:
+- |-
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."51.20.178.23:5000"]
+    endpoint = ["http://51.20.178.23:5000"]
